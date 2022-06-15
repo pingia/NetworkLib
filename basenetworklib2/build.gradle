@@ -1,0 +1,85 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.pingia'
+
+android {
+    compileSdkVersion 28
+
+    lintOptions {
+        abortOnError false
+    }
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+
+    task makeJar(type: Copy) {
+        delete 'build/basenetworklib_V1.0.jar' //删除之前的旧jar包
+        from('build/intermediates/bundles/default/') //从这个目录下取出默认jar包
+        into('build/') //将jar包输出到指定目录下
+        include('classes.jar')
+        rename('classes.jar', 'basenetworklib_V1.0.jar') //自定义jar包的名字
+    }
+    makeJar.dependsOn(build)
+
+    afterEvaluate {
+        publishing {
+            def versionName = "1.0.0" // 当前版本依赖库版本号，这个jitpack不会使用到，只是我们开发者自己查看
+            publications {
+                // Creates a Maven publication called "release".
+                release(MavenPublication) {
+                    // Applies the component for the release build variant.
+//                    from components.release // 表示发布 release（jitpack 都不会使用到）
+
+                    // You can then customize attributes of the publication as shown below.
+                    groupId = 'com.github.pingia' // 这个是依赖库的组 id
+                    artifactId = 'NetworkLib' // 依赖库的名称（jitpack 都不会使用到）
+                    version = versionName
+                }
+            }
+            repositories {
+                // 下面这部分，不是很清楚加不加，但是最后加上
+                maven {
+                    // change URLs to point to your repos, e.g. http://my.org/repo
+                    def baseUrl = buildDir.getParent()
+                    def releasesRepoUrl = "$baseUrl/repos/releases"
+                    def snapshotsRepoUrl = "$baseUrl/repos/snapshots"
+                    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                }
+            }
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'io.reactivex:rxjava:1.1.3'
+    implementation 'io.reactivex:rxandroid:1.1.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    implementation 'com.github.pingia:CommonUtils:1.0.3'
+
+}

@@ -1,0 +1,3 @@
+include ':basenetworklib2'
+include ':app'
+rootProject.name = "NetworkLib"
