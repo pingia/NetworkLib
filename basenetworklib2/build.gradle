@@ -80,6 +80,6 @@ dependencies {
     implementation 'io.reactivex:rxandroid:1.1.0'
     implementation 'com.google.code.gson:gson:2.8.5'
 
-    implementation 'com.github.pingia:CommonUtils:1.0.3'
+    implementation 'com.github.pingia:CommonUtils:1.0.4'
 
 }
