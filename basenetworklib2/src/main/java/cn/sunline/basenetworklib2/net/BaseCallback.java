@@ -28,9 +28,10 @@ public abstract class BaseCallback implements ICallback {
      * view是否可用
      * @return
      */
-    protected boolean isDataValid(){
+    public boolean isDataValid(){
         return this.handler == null || this.handler.doDataHandle("");
     }
+
     @Override
     public void onResponseDataOk(byte[] data){
         boolean isDataValid = this.handler == null || this.handler.doDataHandle(data);
